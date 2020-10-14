@@ -22,7 +22,7 @@ ui <- navbarPage(
                        }",
     "body {padding-top: 75px;}"),
   
-  tabPanel("Info",value = "info",
+  tabPanel("Información",value = "info",
      shinyjs::useShinyjs(),
      tags$head(tags$script(HTML('var fakeClick = function(tabName) {
                                  var dropdownList = document.getElementsByTagName("a");
@@ -52,8 +52,7 @@ ui <- navbarPage(
      fluidRow(
        
        style = "height:50px;"),
-     
-     # PAGE BREAK
+
      tags$hr(),
      
      fluidRow(
@@ -69,7 +68,7 @@ ui <- navbarPage(
                   ),
                   div(
                     h5(
-                      "Grafica de visitantes de cada parque, del anio 1979 a 2019.
+                      "Grafica de visitantes de cada parque, del año 1979 a 2019.
                        Total de visitantes."
                     )
                   )
@@ -112,18 +111,31 @@ ui <- navbarPage(
      ),
   ),
   
-  tabPanel("Data",
+  tabPanel("Data Anual",
      fluidRow(
        HTML("<section class='banner2'> </section>")
      ),
      fluidRow(
        column(12, 
-              tableOutput("annual_visits")
+              h2("Base de datos anual"),
+              DT::dataTableOutput("mytable")
        )
      )
   ),
+  
+  tabPanel("Data Mensual",
+           fluidRow(
+             HTML("<section class='banner2'> </section>")
+           ),
+           fluidRow(
+             column(12, 
+                    h2("Base de datos mensual"),
+                    DT::dataTableOutput("mytable2")
+      )
+    )
+  ),
     
-  tabPanel("Graph",
+  tabPanel("Gráficas",
     fluidRow(
       HTML("<section class='banner2'> </section>")
     ),
@@ -133,7 +145,7 @@ ui <- navbarPage(
                          selected = "Crater Lake NP")
       ),
       column(4,
-             sliderInput("selected_year", "Anio", 
+             sliderInput("selected_year", "Año", 
                          value = 2019,
                          min = min(annual_visits$year), 
                          max = max(annual_visits$year),
@@ -160,13 +172,12 @@ ui <- navbarPage(
       )
     )
   ),
-  tabPanel('Lineal')
+  tabPanel('Predicción')
 )
 
 server <- function(input, output, session) {
   output$park_name <- renderText(input$selected_park)
   
-  # display 10 rows initially
   output$ex1 <- DT::renderDataTable(
     DT::datatable(annual_data, options = list(pageLength = 25))
   )
@@ -202,6 +213,14 @@ server <- function(input, output, session) {
     monthly_data() %>% 
       plot_monthly(display_average = input$display_average,
                    highlight_year = input$selected_year) 
+  })
+  
+  output$mytable = DT::renderDataTable({
+    annual_visits
+  })
+  
+  output$mytable2 = DT::renderDataTable({
+    monthly_visits
   })
   
 }

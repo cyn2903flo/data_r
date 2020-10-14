@@ -23,14 +23,14 @@ plot_monthly <- function(monthly_data, highlight_year = 2019,
                          display_average = TRUE){
   p <- monthly_data %>% 
     ggplot(aes(month, recreation_visits_proportion)) +
-    geom_line(aes(group = year), alpha = 0.2) +
+    geom_line(aes(group = year), alpha = 0.1) +
     geom_line(data = ~ filter(.x, year == highlight_year)) +
     scale_x_continuous(breaks = 1:12, labels = month.abb) +
     scale_y_continuous(labels = scales::label_percent()) +
     labs(x = "", y = "Visitas anuales")
   if(display_average) {
     p <- p + stat_summary(fun = mean, 
-      geom = "line", color = "#325D88", size = 1.5) 
+      geom = "line", color = "#325D88", size = 3.5) 
   }
   p
 }
